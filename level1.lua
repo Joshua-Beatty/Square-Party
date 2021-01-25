@@ -8,12 +8,14 @@ crypto = require("crypto")
 -- include Corona's "physics" library
 local physics = require "physics"
 local id
+local defaultGrav = 9.8
 if system.getInfo("platform") == 'html5' then
   timejs = require "timejs"
   newSeed = timejs.now();
   math.randomseed(newSeed)
   --print(newSeed)
   id = timejs.now()
+  defaultGrav = 15.288
 else
   math.randomseed( os.time())
   id = crypto.digest( crypto.md5, system.getTimer()  ..  math.random()   )
@@ -54,6 +56,16 @@ local function onKeyEvent( event )
   end
   if ( event.keyName == "w" and event.phase == "up") then
     wDown = false
+  end
+  if ( event.keyName == "s" and event.phase == "down") then
+    physics.setGravity(0, defaultGrav * 4)
+    local vx, vy = yourPlayer:getLinearVelocity()
+    if(vy < 0) then
+    yourPlayer:setLinearVelocity( vx, 0 )
+    end
+  end
+  if ( event.keyName == "s" and event.phase == "up") then
+    physics.setGravity(0, defaultGrav)
   end
   return false
 end
@@ -189,9 +201,7 @@ function scene:create( event )
   display.setDefault( "anchorY", -1 )
   physics.start()
   physics.pause() 
-  if system.getInfo("platform") == 'html5' then
-    physics.setGravity( 0, 15.288 )
-  end
+  physics.setGravity( 0, defaultGrav )
   --physics.setDrawMode( 'hybrid' )
 
   local background = display.newImageRect( "sky.png", 800, 600 )
