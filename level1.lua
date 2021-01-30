@@ -233,6 +233,10 @@ function scene:create( event )
       tempRow = {}
     end
   end
+  local spawnpoints = {}
+  for k,v in pairs(thing.layers[2].objects) do
+    table.insert(spawnpoints, {v.x, v.y})
+  end
 
 
   local topLeftx 
@@ -296,14 +300,14 @@ function scene:create( event )
   end
 
   for k,v in pairs(platforms) do
-    v:setFillColor(  0,0,0,0)
+    v:setFillColor(0,0,0,0)
     physics.addBody(v, "static", { friction=0 } )
     sceneGroup:insert(v)
   end
 
 
   yourPlayer = display.newImageRect( "square.png", 30, 30)
-  yourPlayer.x, yourPlayer.y = 160, 300
+  yourPlayer.x, yourPlayer.y =  unpack(spawnpoints[ math.random( #spawnpoints ) ])
   physics.addBody( yourPlayer, { shape ={-14,-14,14,-14,14,14,-14,14},density=1.0, friction=0, bounce=0 }, { box={ halfWidth=13, halfHeight=1, x=15, y=28 }, isSensor = true} )
   yourPlayer:setFillColor(unpack(yourColor))
   yourPlayer.isFixedRotation = true
