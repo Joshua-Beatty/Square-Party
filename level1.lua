@@ -8,14 +8,14 @@ crypto = require("crypto")
 -- include Corona's "physics" library
 local physics = require "physics"
 local id
-local defaultGrav = 9.8
+local defaultGrav = 5
 if system.getInfo("platform") == 'html5' then
   timejs = require "timejs"
   newSeed = timejs.now();
   math.randomseed(newSeed)
   --print(newSeed)
   id = timejs.now()
-  defaultGrav = 15.288
+  --defaultGrav = 15.288
 else
   math.randomseed( os.time())
   id = crypto.digest( crypto.md5, system.getTimer()  ..  math.random()   )
@@ -30,7 +30,7 @@ local scene = composer.newScene()
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 local yourPlayer
-local speed = 200
+local speed = 100
 local aDown, dDown = false
 local grounded = 0
 local wDown = false
@@ -138,9 +138,9 @@ local function myListener ( event )
   end
   if (grounded > 0 and wDown) then
 
-    vy = -300
+    vy = -215
     if system.getInfo("platform") == 'html5' then
-      vy = -374.7
+      --vy = -374.7
     end 
   end
   yourPlayer:setLinearVelocity( vx, vy )
@@ -202,6 +202,7 @@ function scene:create( event )
   physics.start()
   physics.pause() 
   physics.setGravity( 0, defaultGrav )
+  physics.setTimeStep( 1/30 )
   --physics.setDrawMode( 'hybrid' )
 
   local background = display.newImageRect( "sky.png", 800, 600 )
