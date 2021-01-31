@@ -7,6 +7,8 @@
 crypto = require("crypto")
 -- include Corona's "physics" library
 local physics = require "physics"
+local serverIP = "localhost"
+-- serverIP = "178.128.131.201"
 local id
 local defaultGrav = 5
 if system.getInfo("platform") == 'html5' then
@@ -76,8 +78,11 @@ local playersTimeMade = {}
 local timeCount = 0
 local sceneGroup
 hubCallback = function(message)
+  if(type(message) == "table" and message.user == "host") then
+    print(message.data)
+    end
   if(type(message) == "table" and message["typeMessage"] == "playerInfo") then
-    if (message.user ~= id) then
+    --if (message.user ~= id) then
 
       if(players[message.user] == nil) then
         players[message.user] = display.newImageRect( "square.png", 30, 30)
@@ -95,7 +100,7 @@ hubCallback = function(message)
         players[message.user]:setLinearVelocity(message.vel)
         playersTimeMade[message.user] = timeCount
       end
-    end
+    --end
   end
 end
 subscribeCallbackFunc = function()
@@ -109,7 +114,7 @@ if system.getInfo("platform") == 'html5' then
   hub.init(hubCallback, subscribeCallbackFunc, errorCallbackFunc)
 else
   require("noobhub")
-  hub = noobhub.new({ server = "178.128.131.201"; port = 1337; });
+  hub = noobhub.new({ server = serverIP; port = 1337; });
   hub:subscribe({
       channel = "game";
       callback = hubCallback;
